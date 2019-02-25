@@ -40,7 +40,9 @@ except ImportError:
 
 from ansible.module_utils._text import to_text, to_native
 from ansible.module_utils.six import integer_types, iteritems, string_types, raise_from
+from ansible.module_utils.six.moves.urllib.parse import urlparse
 from ansible.module_utils.basic import env_fallback, missing_required_lib
+from ansible.module_utils.urls import generic_urlparse
 
 
 class TaskError(Exception):
@@ -482,8 +484,31 @@ def vmware_argument_spec():
         validate_certs=dict(type='bool',
                             required=False,
                             default=True,
-                            fallback=(env_fallback, ['VMWARE_VALIDATE_CERTS'])),
+                            fallback=(env_fallback, ['VMWARE_VALIDATE_CERTS'])
+                            ),
+        https_proxy=dict(type='str',
+                         required=False,
+                         default=None,
+                         fallback=(env_fallback, ['https_proxy'])
+                         ),
+        http_proxy=dict(type='str',
+                        required=False,
+                        default=None,
+                        fallback=(env_fallback, ['http_proxy'])
+                        ),
     )
+
+
+def parse_proxy_url(module, proxy_url):
+    proxy_parts = generic_urlparse(urlparse(proxy_url))
+    proxy_port = proxy_parts.get('port') or 80
+    proxy_hostname = proxy_parts.get('hostname', None)
+    proxy_scheme = proxy_parts.get('scheme', '')
+    if proxy_hostname is None or proxy_scheme == '' or proxy_scheme not in ('https', 'http'):
+        module.fail_json(msg="Failed to parse proxy url. Please make sure you"
+                             " provide proxy as '<SCHEME>://<IP_ADDRESS>:<PORT>'")
+
+    return proxy_hostname, proxy_port
 
 
 def connect_to_api(module, disconnect_atexit=True):
@@ -518,18 +543,36 @@ def connect_to_api(module, disconnect_atexit=True):
         ssl_context.verify_mode = ssl.CERT_NONE
 
     service_instance = None
+    https_proxy = module.params.get('https_proxy') or None
+    http_proxy = module.params.get('http_proxy') or None
+
+    connect_args = dict(
+        host=hostname,
+        port=port,
+    )
+    if ssl_context:
+        connect_args.update(sslContext=ssl_context)
+
+    proxy_url, proxy_host, proxy_port = (None, None, None)
+
+    if http_proxy or https_proxy:
+        proxy_url = http_proxy or https_proxy
+        proxy_host, proxy_port = parse_proxy_url(module, proxy_url=proxy_url)
+
     try:
-        connect_args = dict(
-            host=hostname,
-            user=username,
-            pwd=password,
-            port=port,
-        )
-        if ssl_context:
-            connect_args.update(sslContext=ssl_context)
-        service_instance = connect.SmartConnect(**connect_args)
+        if proxy_url and proxy_host and proxy_port:
+            connect_args.update(httpProxyHost=proxy_host, httpProxyPort=proxy_port)
+            smart_stub = connect.SmartStubAdapter(**connect_args)
+            session_stub = connect.VimSessionOrientedStub(smart_stub, connect.VimSessionOrientedStub.makeUserLoginMethod(username, password))
+            service_instance = vim.ServiceInstance('ServiceInstance', session_stub)
+        else:
+            connect_args.update(user=username, pwd=password)
+            service_instance = connect.SmartConnect(**connect_args)
     except vim.fault.InvalidLogin as invalid_login:
-        module.fail_json(msg="Unable to log on to vCenter or ESXi API at %s:%s as %s: %s" % (hostname, port, username, invalid_login.msg))
+        msg = "Unable to log on to vCenter or ESXi API at %s:%s " % (hostname, port)
+        if proxy_url:
+            msg += "using proxy url %s" % proxy_url
+        module.fail_json(msg="%s as %s: %s" % (msg, username, invalid_login.msg))
     except vim.fault.NoPermission as no_permission:
         module.fail_json(msg="User %s does not have required permission"
                              " to log on to vCenter or ESXi API at %s:%s : %s" % (username, hostname, port, no_permission.msg))
@@ -537,13 +580,21 @@ def connect_to_api(module, disconnect_atexit=True):
         module.fail_json(msg="Unable to connect to vCenter or ESXi API at %s on TCP/%s: %s" % (hostname, port, generic_req_exc))
     except vmodl.fault.InvalidRequest as invalid_request:
         # Request is malformed
-        module.fail_json(msg="Failed to get a response from server %s:%s as "
-                             "request is malformed: %s" % (hostname, port, invalid_request.msg))
+        msg = "Failed to get a response from server %s:%s " % (hostname, port)
+        if proxy_url:
+            msg += "using proxy url %s" % proxy_url
+        module.fail_json(msg="%s as request is malformed: %s" % (msg, invalid_request.msg))
     except Exception as generic_exc:
-        module.fail_json(msg="Unknown error while connecting to vCenter or ESXi API at %s:%s : %s" % (hostname, port, generic_exc))
+        msg = "Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port)
+        if proxy_url:
+            msg += " using proxy url %s" % proxy_url
+        module.fail_json(msg="%s : %s" % (msg, generic_exc))
 
     if service_instance is None:
-        module.fail_json(msg="Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port))
+        msg = "Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port)
+        if proxy_url:
+            msg += " using proxy url %s" % proxy_url
+        module.fail_json(msg=msg)
 
     # Disabling atexit should be used in special cases only.
     # Such as IP change of the ESXi host which removes the connection anyway.
