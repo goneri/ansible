@@ -46,6 +46,22 @@ options:
       type: int
       default: 443
       version_added: '2.5'
+    http_proxy:
+      description:
+      - Address of a proxy that will receive all HTTP requests and relay them.
+      - The format is a URL including a port number. For example, http://10.0.0.1:9090.
+      - If the value is not specified in the task, the value of environment variable C(https_proxy) will be used instead.
+      type: str
+      version_added: '2.8'
+      required: False
+    https_proxy:
+      description:
+      - Address of a proxy that will receive all HTTPS requests and relay them.
+      - The format is a URL including a port number. For example, https://10.0.0.1:8443.
+      - If the value is not specified in the task, the value of environment variable C(https_proxy) will be used instead.
+      type: str
+      version_added: '2.8'
+      required: False
 '''
 
     # This doc fragment is specific to vcenter modules like vcenter_license
@@ -87,4 +103,20 @@ options:
       type: int
       default: 443
       version_added: '2.5'
+    http_proxy:
+      description:
+      - Address of a proxy that will receive all HTTP requests and relay them.
+      - The format is a URL including a port number. For example, http://10.0.0.1:9090.
+      - If the value is not specified in the task, the value of environment variable C(http_proxy) will be used instead.
+      type: str
+      version_added: '2.8'
+      required: False
+    https_proxy:
+      description:
+      - Address of a proxy that will receive all HTTPS requests and relay them.
+      - The format is a URL including a port number. For example, https://10.0.0.1:8443.
+      - If the value is not specified in the task, the value of environment variable C(https_proxy) will be used instead.
+      type: str
+      version_added: '2.8'
+      required: False
     '''

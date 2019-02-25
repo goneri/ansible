@@ -54,7 +54,41 @@ test_data = [
         ),
         "Unknown error while connecting to vCenter or ESXi API at esxi1:443"
     ),
+    (
+        dict(
+            username='Administrator@vsphere.local',
+            password='Esxi@123$%',
+            hostname='esxi1',
+            http_proxy='ftp://myproxyserver.com:80',
+            validate_certs=False,
+        ),
+        "Failed to parse proxy url"
+    ),
+    (
+        dict(
+            username='Administrator@vsphere.local',
+            password='Esxi@123$%',
+            hostname='esxi1',
+            http_proxy='http://myproxyserver.com:80',
+            validate_certs=False,
+        ),
+        "using proxy url http://myproxyserver.com:80"
+    ),
+    (
+        dict(
+            username='Administrator@vsphere.local',
+            password='Esxi@123$%',
+            hostname='esxi1',
+            http_proxy='https://myproxyserver.com:80',
+            validate_certs=False,
+        ),
+        "using proxy url https://myproxyserver.com:80"
+    ),
 ]
+
+test_ids = ['hostname', 'username', 'password', 'validate_certs',
+            'invalid_http_proxy', 'valid_http_proxy', 'valid_https_proxy',
+            ]
 
 
 class AnsibleModuleExit(Exception):
@@ -113,7 +147,7 @@ def test_requests_lib_exists(mocker, fake_ansible_module):
 
 
 @pytest.mark.skipif(sys.version_info < (2, 7), reason="requires python2.7 and greater")
-@pytest.mark.parametrize("params, msg", test_data, ids=['hostname', 'username', 'password', 'validate_certs'])
+@pytest.mark.parametrize("params, msg", test_data, ids=test_ids)
 def test_required_params(request, params, msg, fake_ansible_module):
     """ Test if required params are correct or not"""
     fake_ansible_module.params = params
