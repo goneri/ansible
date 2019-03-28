@@ -2,6 +2,13 @@
 from __future__ import absolute_import, print_function
 
 import os
+from six.moves.urllib.request import urlopen
+import six.moves.urllib.error as urllib_error
+import six.moves.http_client as http_client
+import ssl
+import time
+
+import json
 
 from lib.cloud import (
     CloudProvider,
@@ -113,7 +120,10 @@ class VcenterProvider(CloudProvider):
                     '-p', '5000:5000',  # control port for flask app in simulator
                 ]
             else:
-                publish_ports = []
+                publish_ports = [
+                    '-p', '443:443',
+                    '-p', '5000:5000',
+                ]
 
             if not os.environ.get('ANSIBLE_VCSIM_CONTAINER'):
                 docker_pull(self.args, self.image)
@@ -132,6 +142,8 @@ class VcenterProvider(CloudProvider):
         else:
             vcenter_host = 'localhost'
 
+        self.wait()
+
         self._set_cloud_config('vcenter_host', vcenter_host)
 
     def _get_simulator_address(self):
@@ -142,6 +154,19 @@ class VcenterProvider(CloudProvider):
     def _setup_static(self):
         raise NotImplementedError()
 
+    def wait(self):
+        def call(url):
+            for dummy in range(300):
+                try:
+                    response = urlopen(url, context=ssl._create_unverified_context())
+                    if (response.status) == 200:
+                        return
+                except (ConnectionResetError, urllib_error.URLError, http_client.BadStatusLine) as e:
+                    time.sleep(0.1)
+                    pass
+        call('http://localhost:5000/killall')
+        call('http://localhost:5000/spawn')
+        call('https://localhost:443/rest/com/vmware/cis/session')
 
 class VcenterEnvironment(CloudEnvironment):
     """VMware vcenter/esx environment plugin. Updates integration test environment after delegation."""
@@ -155,6 +180,9 @@ class VcenterEnvironment(CloudEnvironment):
 
         ansible_vars = dict(
             vcsim=self._get_cloud_config('vcenter_host'),
+            vcenter_hostname=self._get_cloud_config('vcenter_host'),
+            vcenter_username='user',
+            vcenter_password='pass',
         )
 
         return CloudEnvironmentConfig(
