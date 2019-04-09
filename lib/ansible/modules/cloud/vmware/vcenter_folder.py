@@ -208,8 +208,8 @@ class VmwareFolderManager(PyVmomi):
                     if self.module.check_mode:
                         results['result'] = "Folder '%s' of type '%s' will be created." % (folder_name, folder_type)
                     else:
-                        self.datacenter_folder_type[folder_type].CreateFolder(folder_name)
-                        results['result'] = "Folder '%s' of type '%s' created successfully." % (folder_name, folder_type)
+                        new_folder = self.datacenter_folder_type[folder_type].CreateFolder(folder_name)
+                        results['result'] = "Folder '%s' of type '%s' created successfully (full path: %s)." % (folder_name, folder_type, self.get_folder_path(new_folder))
                     results['changed'] = True
             except vim.fault.DuplicateName as duplicate_name:
                 # To be consistent with the other vmware modules, We decided to accept this error
