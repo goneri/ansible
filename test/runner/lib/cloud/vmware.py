@@ -77,21 +77,10 @@ class VmwareCloudProvider(CloudProvider):
 
         if not self.args.explain:
             response = aci.start()
-
-        if not self.args.explain:
             credentials = response['esxi']
             self.aci = aci
 
-        if not self.args.explain:
-            values = dict(
-                VMWARE_HOST=credentials['VMWARE_HOST'],
-                VMWARE_USER=credentials['VMWARE_USER'],
-                VMWARE_PASSWORD=credentials['VMWARE_PASSWORD'],
-                VMWARE_HTTPS_PORT=str(credentials['VMWARE_HTTPS_PORT']),
-                VMWARE_SSH_PORT=str(credentials['VMWARE_SSH_PORT']),
-                VMWARE_VALIDATE_CERTS=credentials["VMWARE_VALIDATE_CERTS"],
-            )
-
+            values = {k: str(credentials[k]) for k in credentials.keys()}
             config = self._populate_config_template(config, values)
             self._write_config(config)
 
@@ -107,6 +96,7 @@ class VmwareCloudProvider(CloudProvider):
 class VmwareEnvironment(CloudEnvironment):
     """VMware Vmware environment plugin. Updates integration test
     environment after delegation."""
+
     def get_environment_config(self):
         """
         :rtype: CloudEnvionmentConfig
@@ -115,14 +105,9 @@ class VmwareEnvironment(CloudEnvironment):
         parser = ConfigParser()
         parser.read(self.config_path)
 
-        env_vars = {}
-
-        ansible_vars = dict(
-            resource_prefix=self.resource_prefix,
-        )
-        ansible_vars.update(dict(parser.items('DEFAULT')))
+        env_vars = dict(
+            (key.upper(), value) for key, value in parser.items('DEFAULT'))
 
         return CloudEnvironmentConfig(
             env_vars=env_vars,
-            ansible_vars=ansible_vars,
         )
