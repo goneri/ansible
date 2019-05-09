@@ -1,4 +1,4 @@
 shippable/vcenter/group1
-cloud/vcenter
+cloud/vmware
 
 needs/target/prepare_vmware_tests
