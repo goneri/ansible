@@ -240,6 +240,16 @@ class NetworkIntegrationConfig(IntegrationConfig):
         self.testcase = args.testcase  # type: str
 
 
+class VMwareIntegrationConfig(IntegrationConfig):
+    """Configuration for the VMware integration command."""
+
+    def __init__(self, args):
+        """
+        :type args: any
+        """
+        super(VMwareIntegrationConfig, self).__init__(args, 'vmware-integration')
+
+
 class UnitsConfig(TestConfig):
     """Configuration for the units command."""
     def __init__(self, args):

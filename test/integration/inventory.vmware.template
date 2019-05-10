@@ -1,0 +1,7 @@
+testhost ansible_connection=local ansible_python_interpreter="{{ ansible_playbook_python }}"
+esxi1 ansible_host=@ESXI1_HOST ansible_user=@ESXI1_USER ansible_password=@ESXI1_PASSWORD ansible_python_interpreter=/bin/python ansible_ssh_common_args="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+esxi1 ansible_host=@ESXI2_HOST ansible_user=@ESXI2_USER ansible_password=@ESXI2_PASSWORD ansible_python_interpreter=/bin/python ansible_ssh_common_args="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+[esxi-lab]
+esxi1
+esxi2

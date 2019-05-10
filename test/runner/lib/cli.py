@@ -32,6 +32,7 @@ from lib.executor import (
     command_posix_integration,
     command_network_integration,
     command_windows_integration,
+    command_vmware_integration,
     command_units,
     command_shell,
     SUPPORTED_PYTHON_VERSIONS,
@@ -46,6 +47,7 @@ from lib.config import (
     PosixIntegrationConfig,
     WindowsIntegrationConfig,
     NetworkIntegrationConfig,
+    VMwareIntegrationConfig,
     SanityConfig,
     UnitsConfig,
     ShellConfig,
@@ -359,6 +361,14 @@ def parse_args():
                                      metavar='VERSION',
                                      action='append',
                                      help='windows version').completer = complete_windows
+
+    vmware_integration = subparsers.add_parser('vmware-integration',
+                                               parents=[integration],
+                                               help='windows integration tests')
+
+    vmware_integration.set_defaults(func=command_vmware_integration,
+                                    targets=walk_posix_integration_targets,
+                                    config=VMwareIntegrationConfig)
 
     units = subparsers.add_parser('units',
                                   parents=[test],

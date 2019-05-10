@@ -18,6 +18,7 @@ from lib.config import (
     NetworkIntegrationConfig,
     PosixIntegrationConfig,
     WindowsIntegrationConfig,
+    VMwareIntegrationConfig,
 )
 
 from lib.util import (
@@ -158,6 +159,7 @@ def integration_test_environment(args, target, inventory_path):
             PosixIntegrationConfig: 'inventory',
             WindowsIntegrationConfig: 'inventory.winrm',
             NetworkIntegrationConfig: 'inventory.networking',
+            VMwareIntegrationConfig: 'inventory.vmware',
         }
 
         inventory_name = inventory_names[type(args)]
