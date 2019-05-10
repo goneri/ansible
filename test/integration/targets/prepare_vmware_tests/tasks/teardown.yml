@@ -1,10 +1,6 @@
 ---
 - name: Remove "{{ vm_name }}"
   vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: no
     cluster: "{{ ccr1 }}"
     name: "{{ item }}"
     force: yes
@@ -14,10 +10,6 @@
 
 - name: Remove the DVSwitch
   vmware_dvswitch:
-    validate_certs: no
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
     datacenter_name: '{{ dc1 }}'
     switch_name: '{{ dvswitch1 }}'
     state: absent
@@ -35,16 +27,12 @@
 
 - name: Remove ESXi Hosts to vCenter
   vmware_host:
-    hostname: '{{ vcenter_hostname }}'
-    username: '{{ vcenter_username }}'
-    password: '{{ vcenter_password }}'
     datacenter_name: '{{ dc1 }}'
     cluster_name: ccr1
     esxi_hostname: '{{ hostvars[item].ansible_host }}'
     esxi_username: '{{ hostvars[item].ansible_user }}'
     esxi_password: '{{ hostvars[item].ansible_password }}'
     state: absent
-    validate_certs: no
   with_items: "{{ groups['esxi-lab'] }}"
   ignore_errors: yes
 
@@ -107,10 +95,6 @@
 
 - name: Remove the datacenter
   vmware_datacenter:
-    validate_certs: no
-    hostname: '{{ vcenter_hostname }}'
-    username: '{{ vcenter_username }}'
-    password: '{{ vcenter_password }}'
     datacenter_name: '{{ item }}'
     state: absent
   when: vcsim is not defined

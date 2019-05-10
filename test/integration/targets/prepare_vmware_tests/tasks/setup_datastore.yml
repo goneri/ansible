@@ -31,11 +31,7 @@
   with_items: "{{ groups['esxi-lab'] }}"
 
 - name: The vcenter needs a bit of time to refresh the DS list
-  vmware_datastore_facts:
-    validate_certs: false
-    hostname: '{{ vcenter_hostname }}'
-    username: '{{ vcenter_username }}'
-    password: '{{ vcenter_password }}'
+  vmware_datastore_facts: {}
   register: setup_datastore_datatstore_facts
   failed_when: setup_datastore_datatstore_facts.datastores|length != 2
   until: setup_datastore_datatstore_facts is succeeded
