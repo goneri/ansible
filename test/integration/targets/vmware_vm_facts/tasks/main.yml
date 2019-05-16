@@ -9,8 +9,8 @@
       vmware_vm_facts:
         validate_certs: false
         hostname: '{{ esxi1 }}'
-        username: '{{ hostvars[esxi1].ansible_user }}'
-        password: '{{ hostvars[esxi1].ansible_password }}'
+        username: '{{ esxi_user }}'
+        password: '{{ esxi_password }}'
 
 - import_role:
     name: prepare_vmware_tests

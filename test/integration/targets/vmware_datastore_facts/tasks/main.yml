@@ -29,11 +29,11 @@
     - name: get list of facts about datastores from the ESXi
       vmware_datastore_facts:
         validate_certs: False
-        hostname: '{{ hostvars[item].ansible_host }}'
-        username: '{{ hostvars[item].ansible_user }}'
-        password: '{{ hostvars[item].ansible_password }}'
+        hostname: '{{ item }}'
+        username: '{{ esxi_user }}'
+        password: '{{ esxi_password }}'
       register: facts_from_esxi
-      with_items: "{{ groups['esxi-lab'] }}"
+      with_items: "{{ esxi_hosts }}"
     - assert:
         that:
           - "facts_from_esxi.results[0].datastores|length == 2"

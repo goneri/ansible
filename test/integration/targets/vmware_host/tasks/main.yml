@@ -13,8 +13,8 @@
         datacenter_name: '{{ dc1 }}'
         cluster_name: '{{ ccr1 }}'
         esxi_hostname: '{{ esxi1 }}'
-        esxi_username: '{{ hostvars[esxi1].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi1].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         state: present
         validate_certs: no
       register: readd_host_result
@@ -27,8 +27,8 @@
         datacenter_name: '{{ dc1 }}'
         cluster_name: '{{ ccr1 }}'
         esxi_hostname: '{{ esxi1 }}'
-        esxi_username: '{{ hostvars[esxi1].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi1].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         state: present
         validate_certs: no
       register: readd_host_result
@@ -45,8 +45,8 @@
         password: "{{ vcenter_password }}"
         validate_certs: no
         esxi_hostname: '{{ esxi2 }}'
-        esxi_username: '{{ hostvars[esxi2].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi2].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         datacenter_name: "{{ dc1 }}"
         cluster_name: "{{ ccr1 }}"
         fetch_ssl_thumbprint: False
@@ -119,8 +119,8 @@
         password: "{{ vcenter_password }}"
         validate_certs: no
         esxi_hostname: '{{ esxi2 }}'
-        esxi_username: '{{ hostvars[esxi2].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi2].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         datacenter_name: "{{ dc1 }}"
         folder_name: "/{{ dc1 }}/host/Staging"
         state: present
@@ -139,8 +139,8 @@
         password: "{{ vcenter_password }}"
         validate_certs: no
         esxi_hostname: '{{ esxi2 }}'
-        esxi_username: '{{ hostvars[esxi2].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi2].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         datacenter_name: "{{ dc1 }}"
         folder_name: "/{{ dc1 }}/host/Staging"
         state: present
@@ -158,8 +158,8 @@
         password: "{{ vcenter_password }}"
         validate_certs: no
         esxi_hostname: '{{ esxi2 }}'
-        esxi_username: '{{ hostvars[esxi2].ansible_user }}'
-        esxi_password: '{{ hostvars[esxi2].ansible_password }}'
+        esxi_username: '{{ esxi_user }}'
+        esxi_password: '{{ esxi_password }}'
         datacenter_name: "{{ dc1 }}"
         cluster_name: "{{ ccr1 }}"
         state: reconnect
