@@ -257,12 +257,11 @@ class VcenterEnvironment(CloudEnvironment):
             # Most of the test cases use ansible_vars, but we plan to refactor these
             # to use env_vars, output both for now
             env_vars = dict(
-                (key.upper(), value) for key, value in parser.items('DEFAULT'))
-
-            ansible_vars = dict(
-                resource_prefix=self.resource_prefix,
+                HTTPS_PROXY='localhost:8888',
+                VMWARE_VALIDATE_CERTS='no',
             )
-            ansible_vars.update(dict(parser.items('DEFAULT')))
+            ansible_vars = dict(
+            )
 
         else:
             env_vars = dict(
