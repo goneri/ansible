@@ -555,8 +555,8 @@ def connect_to_api(module, disconnect_atexit=True):
             service_instance = connect.SmartConnect(**connect_args)
     except vim.fault.InvalidLogin as invalid_login:
         msg = "Unable to log on to vCenter or ESXi API at %s:%s " % (hostname, port)
-        if proxy_url:
-            msg += "using proxy url %s" % proxy_url
+        if proxy_host:
+            msg += "using proxy url %s:%d" % (proxy_host, proxy_port)
         module.fail_json(msg="%s as %s: %s" % (msg, username, invalid_login.msg))
     except vim.fault.NoPermission as no_permission:
         module.fail_json(msg="User %s does not have required permission"
@@ -566,13 +566,13 @@ def connect_to_api(module, disconnect_atexit=True):
     except vmodl.fault.InvalidRequest as invalid_request:
         # Request is malformed
         msg = "Failed to get a response from server %s:%s " % (hostname, port)
-        if proxy_url:
-            msg += "using proxy url %s" % proxy_url
+        if proxy_host:
+            msg += "using proxy url %s:%d" % (proxy_host, proxy_port)
         module.fail_json(msg="%s as request is malformed: %s" % (msg, invalid_request.msg))
     except Exception as generic_exc:
         msg = "Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port)
-        if proxy_url:
-            msg += " using proxy url %s" % proxy_url
+        if proxy_host:
+            msg += " using proxy url %s:%d" % (proxy_host, proxy_port)
         module.fail_json(msg="%s : %s" % (msg, generic_exc))
 
     if service_instance is None:
