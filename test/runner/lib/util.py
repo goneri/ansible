@@ -338,7 +338,7 @@ def intercept_command(args, cmd, target_name, env, capture=False, data=None, cwd
         python_path = get_python_path(args, interpreter)
         inject_path = python_path + os.path.pathsep + inject_path
 
-    env['PATH'] = inject_path + os.path.pathsep + env['PATH']
+#    env['PATH'] = inject_path + os.path.pathsep + env['PATH']
     env['ANSIBLE_TEST_PYTHON_VERSION'] = version
     env['ANSIBLE_TEST_PYTHON_INTERPRETER'] = interpreter
 
