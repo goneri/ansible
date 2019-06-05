@@ -11,8 +11,8 @@ vcenter_hostname: vcenter
 vcenter_username: administrator@vsphere.local
 vcenter_password: "!234AaAa56"
 esxi_hosts:
-  - esxi1
-  - esxi2
+  - esxi1.test
+  - esxi2.test
 esxi_user: root
 esxi_password: "!234AaAa56"
 esxi1: "{{ esxi_hosts[0] }}"
