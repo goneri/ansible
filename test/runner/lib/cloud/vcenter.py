@@ -257,7 +257,8 @@ class VcenterEnvironment(CloudEnvironment):
             # Most of the test cases use ansible_vars, but we plan to refactor these
             # to use env_vars, output both for now
             env_vars = dict(
-                HTTPS_PROXY='localhost:8888',
+                VMWARE_PROXY_HOST='localhost',
+                VMWARE_PROXY_PORT=8888,
                 VMWARE_VALIDATE_CERTS='no',
             )
             ansible_vars = dict(
