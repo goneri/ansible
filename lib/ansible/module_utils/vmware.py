@@ -544,20 +544,20 @@ def connect_to_api(module, disconnect_atexit=True):
     if ssl_context:
         connect_args.update(sslContext=ssl_context)
 
+    msg_suffix = ''
     try:
         if proxy_host:
             connect_args.update(httpProxyHost=proxy_host, httpProxyPort=proxy_port)
             smart_stub = connect.SmartStubAdapter(**connect_args)
             session_stub = connect.VimSessionOrientedStub(smart_stub, connect.VimSessionOrientedStub.makeUserLoginMethod(username, password))
             service_instance = vim.ServiceInstance('ServiceInstance', session_stub)
+            msg_suffix = " [proxy: %s:%d]" % (proxy_host, proxy_port)
         else:
             connect_args.update(user=username, pwd=password)
             service_instance = connect.SmartConnect(**connect_args)
     except vim.fault.InvalidLogin as invalid_login:
         msg = "Unable to log on to vCenter or ESXi API at %s:%s " % (hostname, port)
-        if proxy_host:
-            msg += "using proxy url %s:%d" % (proxy_host, proxy_port)
-        module.fail_json(msg="%s as %s: %s" % (msg, username, invalid_login.msg))
+        module.fail_json(msg="%s as %s: %s" % (msg, username, invalid_login.msg) + msg_suffix)
     except vim.fault.NoPermission as no_permission:
         module.fail_json(msg="User %s does not have required permission"
                              " to log on to vCenter or ESXi API at %s:%s : %s" % (username, hostname, port, no_permission.msg))
@@ -566,20 +566,14 @@ def connect_to_api(module, disconnect_atexit=True):
     except vmodl.fault.InvalidRequest as invalid_request:
         # Request is malformed
         msg = "Failed to get a response from server %s:%s " % (hostname, port)
-        if proxy_host:
-            msg += "using proxy url %s:%d" % (proxy_host, proxy_port)
-        module.fail_json(msg="%s as request is malformed: %s" % (msg, invalid_request.msg))
+        module.fail_json(msg="%s as request is malformed: %s" % (msg, invalid_request.msg) + msg_suffix)
     except Exception as generic_exc:
         msg = "Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port)
-        if proxy_host:
-            msg += " using proxy url %s:%d" % (proxy_host, proxy_port)
-        module.fail_json(msg="%s : %s" % (msg, generic_exc))
+        module.fail_json(msg="%s : %s" % (msg, generic_exc) + msg_suffix)
 
     if service_instance is None:
         msg = "Unknown error while connecting to vCenter or ESXi API at %s:%s" % (hostname, port)
-        if proxy_url:
-            msg += " using proxy url %s" % proxy_url
-        module.fail_json(msg=msg)
+        module.fail_json(msg=msg + msg_suffix)
 
     # Disabling atexit should be used in special cases only.
     # Such as IP change of the ESXi host which removes the connection anyway.
