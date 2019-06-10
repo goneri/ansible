@@ -59,35 +59,26 @@ test_data = [
             username='Administrator@vsphere.local',
             password='Esxi@123$%',
             hostname='esxi1',
-            http_proxy='ftp://myproxyserver.com:80',
+            proxy_host='myproxyserver.com',
             validate_certs=False,
         ),
-        "Failed to parse proxy url"
+        "using proxy url myproxyserver.com:8080"
     ),
     (
         dict(
             username='Administrator@vsphere.local',
             password='Esxi@123$%',
             hostname='esxi1',
-            http_proxy='http://myproxyserver.com:80',
+            proxy_host='myproxyserver.com',
+            proxy_port=80,
             validate_certs=False,
         ),
-        "using proxy url http://myproxyserver.com:80"
-    ),
-    (
-        dict(
-            username='Administrator@vsphere.local',
-            password='Esxi@123$%',
-            hostname='esxi1',
-            http_proxy='https://myproxyserver.com:80',
-            validate_certs=False,
-        ),
-        "using proxy url https://myproxyserver.com:80"
+        "using proxy url myproxyserver.com:80"
     ),
 ]
 
 test_ids = ['hostname', 'username', 'password', 'validate_certs',
-            'invalid_http_proxy', 'valid_http_proxy', 'valid_https_proxy',
+            'valid_http_proxy', 'valid_https_proxy',
             ]
 
 
