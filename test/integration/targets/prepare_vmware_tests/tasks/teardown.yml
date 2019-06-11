@@ -83,6 +83,7 @@
   with_items:
     - DSC1
     - DSC2
+  ignore_errors: yes
 
 - name: Remove the datacenter
   vmware_datacenter:
