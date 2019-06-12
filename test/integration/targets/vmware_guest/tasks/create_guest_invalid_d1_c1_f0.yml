@@ -16,7 +16,7 @@
         num_cpus: 1
         memory_mb: 512
     disk:
-        - size: 0gb
+        - size: 10gb
           type: thin
           autoselect_datastore: True
     state: present
@@ -29,5 +29,5 @@
 - name: assert that changes were made
   assert:
     that:
-        - "invalid_guest_0001_d1_c1_f0['changed'] == false"
+        - "not (invalid_guest_0001_d1_c1_f0 is changed)"
         - "'configSpec.guestId' in invalid_guest_0001_d1_c1_f0['msg']"
