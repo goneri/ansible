@@ -496,7 +496,7 @@ def vmware_argument_spec():
                         fallback=(env_fallback, ['VMWARE_PROXY_HOST'])),
         proxy_port=dict(type='int',
                         required=False,
-                        default=8080,
+                        default=None,
                         fallback=(env_fallback, ['VMWARE_PROXY_PORT'])),
     )
 

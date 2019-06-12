@@ -512,7 +512,7 @@ class VMwareHost(PyVmomi):
                 ctx = ssl.create_default_context()
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
-                der_cert_bin = ctx.wrap_socket(sock, server_hostname = self.esxi_hostname).getpeercert(True)
+                der_cert_bin = ctx.wrap_socket(sock, server_hostnam=self.esxi_hostname).getpeercert(True)
                 sock.close()
             else:
                 wrapped_socket = ssl.wrap_socket(sock)
@@ -525,9 +525,6 @@ class VMwareHost(PyVmomi):
                     wrapped_socket.close()
 
             thumb_sha1 = self.format_number(hashlib.sha1(der_cert_bin).hexdigest())
-
-           # thumb_md5 = hashlib.md5(der_cert_bin).hexdigest()
-           # thumb_sha256 = hashlib.sha256(der_cert_bin).hexdigest()
             sslThumbprint = thumb_sha1
         else:
             sslThumbprint = self.esxi_ssl_thumbprint

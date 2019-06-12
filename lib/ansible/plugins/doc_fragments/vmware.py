@@ -58,7 +58,7 @@ options:
       description:
       - Port of the HTTP proxy that will receive all HTTPS requests and relay them.
       - If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead.
-      type: str
+      type: int
       version_added: '2.9'
       required: False
 '''
@@ -102,20 +102,19 @@ options:
       type: int
       default: 443
       version_added: '2.5'
-    http_proxy:
-      description:
-      - Address of a proxy that will receive all HTTP requests and relay them.
-      - The format is a URL including a port number. For example, http://10.0.0.1:9090.
-      - If the value is not specified in the task, the value of environment variable C(http_proxy) will be used instead.
-      type: str
-      version_added: '2.8'
-      required: False
-    https_proxy:
+    proxy_host:
       description:
       - Address of a proxy that will receive all HTTPS requests and relay them.
-      - The format is a URL including a port number. For example, https://10.0.0.1:8443.
-      - If the value is not specified in the task, the value of environment variable C(https_proxy) will be used instead.
+      - The format is a hostname or a IP.
+      - If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.
       type: str
-      version_added: '2.8'
+      version_added: '2.9'
+      required: False
+    proxy_port:
+      description:
+      - Port of the HTTP proxy that will receive all HTTPS requests and relay them.
+      - If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead.
+      type: int
+      version_added: '2.9'
       required: False
     '''
