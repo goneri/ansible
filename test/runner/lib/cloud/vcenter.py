@@ -210,6 +210,7 @@ class VcenterProvider(CloudProvider):
                              provider='vmware')
 
     def _setup_static(self):
+        return
         parser = ConfigParser()
         parser.read(self.config_static_path)
 
@@ -257,8 +258,8 @@ class VcenterEnvironment(CloudEnvironment):
             # Most of the test cases use ansible_vars, but we plan to refactor these
             # to use env_vars, output both for now
             env_vars = dict(
-                VMWARE_PROXY_HOST='localhost',
-                VMWARE_PROXY_PORT=8888,
+                VMWARE_PROXY_HOST='esxi1-gw.ws.testing.ansible.com',
+                VMWARE_PROXY_PORT=11153,
                 VMWARE_VALIDATE_CERTS='no',
             )
             ansible_vars = dict(
