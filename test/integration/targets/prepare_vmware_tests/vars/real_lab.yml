@@ -1,11 +1,8 @@
 ---
-vcenter_hostname: vcenter.test
-vcenter_username: administrator@vsphere.local
-vcenter_password: blablabla
 esxi_hosts:
   - esxi1.test
   - esxi2.test
-esxi_password: balbalbla
+esxi_password: '{{ esxi1_password }}'
 infra:
   datastores:
     LocalDS_0:
