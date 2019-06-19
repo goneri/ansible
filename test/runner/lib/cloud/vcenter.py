@@ -211,23 +211,28 @@ class VcenterProvider(CloudProvider):
                              provider='vmware')
 
     def _setup_static(self):
-        parser = ConfigParser()
+        parser = ConfigParser({'vcenter_port': '443', 'vmware_proxy_host': None, 'vmware_proxy_port': None})
         parser.read(self.config_static_path)
 
         self.endpoint = parser.get('DEFAULT', 'vcenter_hostname')
+        self.proxy_host = parser.get('DEFAULT', 'vmware_proxy_host')
+        self.proxy_port = int(parser.get('DEFAULT', 'vmware_proxy_port'))
         self.port = parser.get('DEFAULT', 'vcenter_port')
 
         if parser.get('DEFAULT', 'vmware_validate_certs').lower() in ('no', 'false'):
             self.insecure = True
 
+        self.proxy = None
+        if self.proxy_host:
+            self.proxy = 'http://%s:%d' % (self.proxy_host, self.proxy_port)
+
+
         self._wait_for_service()
 
     def _wait_for_service(self):
         """Wait for the VCenter service endpoint to accept connections."""
-        if self.args.explain:
-            return
 
-        client = HttpClient(self.args, always=True, insecure=self.insecure)
+        client = HttpClient(self.args, always=True, insecure=self.insecure, proxy=self.proxy)
         endpoint = 'https://%s:%s' % (self.endpoint, self.port)
 
         for i in range(1, 30):
