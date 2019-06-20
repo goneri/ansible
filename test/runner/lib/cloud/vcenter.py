@@ -35,6 +35,8 @@ from lib.http import (
     HttpClient,
 )
 
+from six.moves.configparser import RawConfigParser as RawConfigParser
+
 
 class VcenterProvider(CloudProvider):
     """VMware vcenter/esx plugin. Sets up cloud resources for tests."""
@@ -211,7 +213,7 @@ class VcenterProvider(CloudProvider):
                              provider='vmware')
 
     def _setup_static(self):
-        parser = ConfigParser({'vcenter_port': '443', 'vmware_proxy_host': None, 'vmware_proxy_port': None})
+        parser = RawConfigParser({'vcenter_port': '443', 'vmware_proxy_host': None, 'vmware_proxy_port': None})
         parser.read(self.config_static_path)
 
         self.endpoint = parser.get('DEFAULT', 'vcenter_hostname')
@@ -257,7 +259,7 @@ class VcenterEnvironment(CloudEnvironment):
         """
         vmware_test_platform = self._get_cloud_config('vmware_test_platform')
         if vmware_test_platform in ('worldstream', 'static'):
-            parser = ConfigParser()
+            parser = RawConfigParser()
             parser.read(self.config_path)
 
             # Most of the test cases use ansible_vars, but we plan to refactor these
