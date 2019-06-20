@@ -505,14 +505,15 @@ class VMwareHost(PyVmomi):
                 sock.connect((
                     self.module.params['proxy_host'],
                     self.module.params['proxy_port']))
-                sock.send("CONNECT %s:443 HTTP/1.0\r\n\r\n" % (self.esxi_hostname))
-                buf = sock.recv(8192)
+                command = "CONNECT %s:443 HTTP/1.0\r\n\r\n" % (self.esxi_hostname)
+                sock.send(command.encode())
+                buf = sock.recv(8192).decode()
                 if buf.split()[1] != '200':
                     self.module.fail_json(msg="Failed to connect to the proxy")
                 ctx = ssl.create_default_context()
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
-                der_cert_bin = ctx.wrap_socket(sock, server_hostnam=self.esxi_hostname).getpeercert(True)
+                der_cert_bin = ctx.wrap_socket(sock, server_hostname=self.esxi_hostname).getpeercert(True)
                 sock.close()
             else:
                 wrapped_socket = ssl.wrap_socket(sock)
