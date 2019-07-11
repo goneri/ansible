@@ -1,0 +1,40 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Authorization:
+      - !!binary |
+        QmFzaWMgWVdSdGFXNXBjM1J5WVhSdmNrQjJjM0JvWlhKbExteHZZMkZzT2lFeU16UkJZVUZoTlRZ
+        PQ==
+      Connection:
+      - close
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Host:
+      - vcenter.test
+      User-Agent:
+      - Python-urllib/3.7
+    method: POST
+    uri: https://vcenter.test/rest/com/vmware/cis/session
+  response:
+    body:
+      string: '{"value":"f97a2c413d4300265c36e6fbc879ee2e"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 11 Jul 2019 00:30:16 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Set-Cookie:
+      - vmware-api-session-id=f97a2c413d4300265c36e6fbc879ee2e;Path=/rest;Secure;HttpOnly
+    status:
+      code: 200
+      message: OK
+version: 1

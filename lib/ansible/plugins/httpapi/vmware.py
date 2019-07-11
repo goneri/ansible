@@ -31,13 +31,16 @@ BASE_HEADERS = {
 
 
 class HttpApi(HttpApiBase):
-    def login(self, username, password):
-        if username and password:
-            payload = {}
-            url = '/rest/com/vmware/cis/session'
-            response, response_data = self.send_request(url, payload)
-        else:
-            raise AnsibleConnectionFailure('Username and password are required for login')
+    def login(self, *args):
+        if not self.connection.get_option('remote_user'):
+            raise AnsibleConnectionFailure('remote_user option is required for login')
+
+        if not self.connection.get_option('password'):
+            raise AnsibleConnectionFailure('password option is required for login')
+
+        payload = {}
+        url = '/rest/com/vmware/cis/session'
+        response, response_data = self.send_request(url, payload)
 
         if response == 404:
             raise ConnectionError(response_data)

@@ -1,0 +1,70 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Authorization:
+      - !!binary |
+        QmFzaWMgWVdSdGFXNXBjM1J5WVhSdmNrQjJjM0JvWlhKbExteHZZMkZzT2lFeU16UkJZVUZoTlRZ
+        PQ==
+      Connection:
+      - close
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Host:
+      - vcenter.test
+      User-Agent:
+      - Python-urllib/3.7
+    method: POST
+    uri: https://vcenter.test/rest/com/vmware/cis/session
+  response:
+    body:
+      string: '{"value":"9df8f2c21fdfc543dbbd358198c42c26"}'
+    headers:
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 11 Jul 2019 00:12:59 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Set-Cookie:
+      - vmware-api-session-id=9df8f2c21fdfc543dbbd358198c42c26;Path=/rest;Secure;HttpOnly
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Connection:
+      - close
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Cookie:
+      - vmware-api-session-id=9df8f2c21fdfc543dbbd358198c42c26;Path=/rest;Secure;HttpOnly
+      Host:
+      - vcenter.test
+      User-Agent:
+      - Python-urllib/3.7
+    method: DELETE
+    uri: https://vcenter.test/rest/com/vmware/cis/session
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - close
+      Date:
+      - Thu, 11 Jul 2019 00:13:00 GMT
+    status:
+      code: 200
+      message: OK
+version: 1
