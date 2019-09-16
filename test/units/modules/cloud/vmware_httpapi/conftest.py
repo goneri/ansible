@@ -3,6 +3,7 @@ __metaclass__ = type
 
 import base64
 import importlib
+import io
 import logging
 import os.path
 import pytest
@@ -16,9 +17,9 @@ import ansible.module_utils.vmware_httpapi.VmwareRestModule
 import ansible.plugins.httpapi.vmware
 
 
-if not sys.version_info < (2, 7):
-    import ansible.module_utils.urls.open_url
-    import urllib.request
+if sys.version_info >= (2, 7):
+    from six.moves.urllib.request import urlopen
+    from six.moves.urllib.request import Request
     import vcr
 
 logging.basicConfig()
@@ -55,7 +56,7 @@ class ConnectionPlugin():
 
     def send(self, path, data, method=None, headers=None, force_basic_auth=True):
         url = vcenter_url + path
-        req = urllib.request.Request(url, headers=headers, data=data.encode(), method=method)
+        req = Request(url, headers=headers, data=data.encode(), method=method)
         if self._token:
             req.add_header("vmware-api-session-id", self._token)
         else:
@@ -63,8 +64,7 @@ class ConnectionPlugin():
             b64auth = base64.standard_b64encode(auth_text.encode())
             req.add_header("Authorization", "Basic %s" % b64auth.decode())
         gcontext = ssl.SSLContext()
-        r = ansible.module_utils.urls.open_url(req, context=gcontext)
-        import io
+        r = urlopen(req)
         return (r, io.BytesIO(r.read()))
 
     def queue_message(self, *args, **kwargs):
