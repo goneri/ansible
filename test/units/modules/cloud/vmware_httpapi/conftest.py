@@ -3,6 +3,7 @@ __metaclass__ = type
 
 import base64
 import importlib
+import inspect
 import io
 import logging
 import os.path
@@ -16,10 +17,11 @@ import ansible.module_utils.basic
 import ansible.module_utils.vmware_httpapi.VmwareRestModule
 import ansible.plugins.httpapi.vmware
 
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+
 
 if sys.version_info >= (2, 7):
-    from six.moves.urllib.request import urlopen
-    from six.moves.urllib.request import Request
     import vcr
 
 logging.basicConfig()
@@ -32,7 +34,6 @@ password = '!234AaAa56'
 
 
 def enable_vcr():
-    import inspect
     stack = inspect.stack()
     test_file_name = os.path.basename(stack[1].filename)
     module_name = test_file_name.split('.')[0]

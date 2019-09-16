@@ -3,10 +3,16 @@ __metaclass__ = type
 
 import pytest
 import sys
-if sys.version_info < (2, 7):
-    pytest.skip("requires python2.7+")
 
-from conftest import enable_vcr
+if sys.version_info < (2, 7):
+    pytestmark = pytest.mark.skip("vmware_guest Ansible modules require Python >= 2.7")
+    def enable_vcr():
+        def b():
+            pass
+        return b
+else:
+    from conftest import enable_vcr
+
 from units.compat.mock import ANY
 
 
