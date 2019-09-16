@@ -6,6 +6,7 @@ import sys
 
 if sys.version_info < (2, 7):
     pytestmark = pytest.mark.skip("vmware_guest Ansible modules require Python >= 2.7")
+
     def enable_vcr():
         def b():
             pass

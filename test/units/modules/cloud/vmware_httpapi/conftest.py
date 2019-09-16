@@ -17,8 +17,8 @@ import ansible.module_utils.basic
 import ansible.module_utils.vmware_httpapi.VmwareRestModule
 import ansible.plugins.httpapi.vmware
 
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.request import Request
+from ansible.module_utils.six.moves.urllib.request import urlopen
+from ansible.module_utils.six.moves.urllib.request import Request
 
 
 if sys.version_info >= (2, 7):
