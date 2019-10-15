@@ -48,9 +48,7 @@
       - "item.uuid is defined"
       - "item.vm_network is defined"
   with_items:
-    - "{{ vm_info_0001.virtual_machines | json_query(query) }}"
-  vars:
-    query: "[?guest_name=='DC0_H0_VM0']"
+    - "{{ vm_info_0001.virtual_machines[0] }}"
 
 - <<: *vm_data
   name: Get info about available vms in check mode
@@ -94,6 +92,4 @@
       - "item.uuid is defined"
       - "item.vm_network is defined"
   with_items:
-    - "{{ vm_info.virtual_machines | json_query(query) }}"
-  vars:
-    query: "[?guest_name=='DC0_H0_VM0']"
+    - "{{ vm_info.virtual_machines[0] }}"
