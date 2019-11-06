@@ -5,20 +5,22 @@
 - import_role:
     name: prepare_vmware_tests
   vars:
-    setup_attach_host: true
+    setup_esxi_instance: true
 
-- when: vcsim is not defined
-  block:
-    - name: Gather DNS facts about ESXi Host
-      vmware_host_dns_info:
-        hostname: '{{ esxi1 }}'
-        username: '{{ esxi_user }}'
-        password: '{{ esxi_password }}'
-        esxi_hostname: "{{ esxi1 }}"
-        validate_certs: False
-      register: res
-
-    - include_tasks: dhcp.yml
-      when: res['hosts_dns_facts']['{{ esxi1 }}']['dhcp']
-    - include_tasks: static.yml
-      when: not res['hosts_dns_facts']['{{ esxi1 }}']['dhcp']
+- name: Gather DNS facts about ESXi Host
+  vmware_host_dns_info:
+    hostname: '{{ esxi1 }}'
+    username: '{{ esxi1_username }}'
+    password: '{{ esxi1_password }}'
+    esxi_hostname: "{{ esxi1 }}"
+    validate_certs: False
+  register: res
+- set_fact:
+    # with govcsim, {{ esxi1 }} and the esxi1 FQDN are different
+    #   esxi1 vs localhost.localdomain
+    esxi_dns_info: "{{ res.hosts_dns_info.values()|list|first }}"
+- debug: var=esxi_dns_info
+- include_tasks: dhcp.yml
+  when: esxi_dns_info.dhcp
+- include_tasks: static.yml
+  when: not esxi_dns_info.dhcp

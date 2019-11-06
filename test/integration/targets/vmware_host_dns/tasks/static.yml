@@ -6,16 +6,16 @@
     password: '{{ esxi_password }}'
     validate_certs: False
     type: 'static'
-    host_name: "{{ res['hosts_dns_facts'][esxi1]['host_name'] }}"
-    domain: "{{ res['hosts_dns_facts'][esxi1]['domain_name'] }}"
-    dns_servers: "{{ res['hosts_dns_facts'][esxi1]['ip_address'] }}"
-    search_domains: "{{ res['hosts_dns_facts'][esxi1]['search_domain'] }}"
+    host_name: "{{ res['hosts_dns_info'][esxi1]['host_name'] }}"
+    domain: "{{ res['hosts_dns_info'][esxi1]['domain_name'] }}"
+    dns_servers: "{{ res['hosts_dns_info'][esxi1]['ip_address'] }}"
+    search_domains: "{{ res['hosts_dns_info'][esxi1]['search_domain'] }}"
   register: vmware_host_dns_result_0001
 
 - name: Ensure DNS config wasn't changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0001.changed is false }}"
+      - "{{ vmware_host_dns_result_0001.changed == False }}"
 
 # Testcase 0002: Change DNS config directly on the host from static to DHCP
 - name: Change DNS config from static to DHCP directly on the host
@@ -31,7 +31,7 @@
 - name: Ensure DNS config was changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0002.changed is true }}"
+      - "{{ vmware_host_dns_result_0002.changed == True }}"
  
 # Testcase 0003: Ensure DNS config directly on the host is idempotent for DHCP
 - name: Ensure DHCP config is idempotent when done directly on the host
@@ -47,7 +47,7 @@
 - name: Ensure DNS config wasn't changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0003.changed is false }}"
+      - vmware_host_dns_result_0003.changed == False
 
 # Testcase 0004: Change DNS config directly on the host from DHCP to static
 - name: Change DNS config from DHCP to static directly on the host
@@ -57,16 +57,16 @@
     password: '{{ esxi_password }}'
     validate_certs: False
     type: 'static'
-    host_name: "{{ res['hosts_dns_facts'][esxi1]['host_name'] }}"
-    domain: "{{ res['hosts_dns_facts'][esxi1]['domain_name'] }}"
-    dns_servers: "{{ res['hosts_dns_facts'][esxi1]['ip_address'] }}"
-    search_domains: "{{ res['hosts_dns_facts'][esxi1]['search_domain'] }}"
+    host_name: "{{ res['hosts_dns_info'][esxi1]['host_name'] }}"
+    domain: "{{ res['hosts_dns_info'][esxi1]['domain_name'] }}"
+    dns_servers: "{{ res['hosts_dns_info'][esxi1]['ip_address'] }}"
+    search_domains: "{{ res['hosts_dns_info'][esxi1]['search_domain'] }}"
   register: vmware_host_dns_result_0004
 
 - name: Ensure DNS config was changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0004.changed is true }}"
+      - "{{ vmware_host_dns_result_0004.changed == true }}"
 
 # Testcase 0005: Ensure DNS config on the cluster is idempotent for static
 - name: Ensure static DNS config is idempotent when done on the cluster
@@ -76,9 +76,9 @@
     password: '{{ esxi_password }}'
     validate_certs: False
     type: 'static'
-    domain: "{{ res['hosts_dns_facts'][esxi1]['domain_name'] }}"
-    dns_servers: "{{ res['hosts_dns_facts'][esxi1]['ip_address'] }}"
-    search_domains: "{{ res['hosts_dns_facts'][esxi1]['search_domain'] }}"
+    domain: "{{ res['hosts_dns_info'][esxi1]['domain_name'] }}"
+    dns_servers: "{{ res['hosts_dns_info'][esxi1]['ip_address'] }}"
+    search_domains: "{{ res['hosts_dns_info'][esxi1]['search_domain'] }}"
   register: vmware_host_dns_result_0005
 
 - name: Ensure DNS config wasn't changed
@@ -100,7 +100,7 @@
 - name: Ensure DNS config was changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0006.changed is true }}"
+      - "{{ vmware_host_dns_result_0006.changed == true }}"
 
 # Testcase 0007: Ensure DNS config on the cluster is idempotent for DHCP
 - name: Ensure DHCP config is idempotent when done on the cluster
@@ -128,12 +128,12 @@
     cluster_name: "{{ ccr1 }}"
     validate_certs: False
     type: 'static'
-    domain: "{{ res['hosts_dns_facts'][esxi1]['domain_name'] }}"
-    dns_servers: "{{ res['hosts_dns_facts'][esxi1]['ip_address'] }}"
-    search_domains: "{{ res['hosts_dns_facts'][esxi1]['search_domain'] }}"
+    domain: "{{ res['hosts_dns_info'][esxi1]['domain_name'] }}"
+    dns_servers: "{{ res['hosts_dns_info'][esxi1]['ip_address'] }}"
+    search_domains: "{{ res['hosts_dns_info'][esxi1]['search_domain'] }}"
   register: vmware_host_dns_result_0008
 
 - name: Ensure DNS config was changed
   assert:
     that:
-      - "{{ vmware_host_dns_result_0008.changed is true }}"
+      - "{{ vmware_host_dns_result_0008.changed == true }}"

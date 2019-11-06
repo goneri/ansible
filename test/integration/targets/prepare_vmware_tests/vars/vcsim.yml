@@ -1,4 +1,13 @@
 ---
+vcenter_hostname: "{{ vcsim }}"
+vcenter_username: "user"
+vcenter_password: "pass"
+esxi_username: "user"
+esxi_password: "pass"
+esxi1_username: "user"
+esxi1_password: "pass"
+esxi2_username: "user"
+esxi2_password: "pass"
 esxi_hosts:
   - DC0_C0_H0
   - DC0_C0_H1
