@@ -24,17 +24,16 @@
       state: poweredon
       guest_id: centos7_64Guest
       disk:
-      - size_gb: 1
-        type: thin
+      - size_gb: 10
+        #type: eagerzerothick
         datastore: '{{ rw_datastore }}'
+        filename: '[{{ rw_datastore }}] vm_sample1/vm_sample1.vmdk'
+        disk_mode: independent_nonpersistent
       hardware:
         version: latest
         memory_mb: 1024
         num_cpus: 1
-        scsi: paravirtual
-      cdrom:
-        type: iso
-        iso_path: "[{{ ro_datastore }}] fedora.iso"
+        scsi: lsilogic
       networks:
       - name: VM Network
 
