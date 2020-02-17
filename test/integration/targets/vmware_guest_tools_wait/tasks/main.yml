@@ -29,6 +29,7 @@
         datastore: '{{ rw_datastore }}'
         filename: '[{{ rw_datastore }}] vm_sample1/vm_sample1.vmdk'
         disk_mode: independent_nonpersistent
+        destroy: false
       hardware:
         version: latest
         memory_mb: 1024
